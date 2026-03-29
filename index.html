@@ -1,21 +1,680 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Моё портфолио</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Название во вкладке браузера -->
+  <title>Dmitry — Portfolio</title>
+
+  <!-- Подключаем шрифт с Google Fonts. Можешь заменить на любой другой с fonts.google.com -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
   <style>
-    /* Здесь CSS — оформление */
+    /* ==============================
+       ПЕРЕМЕННЫЕ — меняй цвета здесь
+       ============================== */
+    :root {
+      --bg:        #0a0a0f;        /* фон страницы */
+      --surface:   #13131a;        /* фон карточек */
+      --border:    #ffffff12;      /* цвет рамок */
+      --accent:    #7c6fff;        /* основной акцент (фиолетовый) */
+      --accent2:   #ff6b6b;        /* второй акцент (красный) */
+      --text:      #e8e8f0;        /* основной текст */
+      --muted:     #6b6b80;        /* приглушённый текст */
+    }
+
+    /* ==============================
+       СБРОС СТИЛЕЙ — не трогай
+       ============================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ==============================
+       БАЗОВЫЕ СТИЛИ СТРАНИЦЫ
+       ============================== */
     body {
-      background: black;
-      color: white;
-      font-family: sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden; /* скрываем горизонтальный скролл */
+    }
+
+    /* Максимальная ширина контента — всё по центру */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ==============================
+       НАВИГАЦИЯ (шапка)
+       ============================== */
+    nav {
+      position: fixed; /* прилипает к верху при скролле */
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Логотип / имя в навбаре */
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    /* Ссылки в навбаре */
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ==============================
+       HERO — главный экран
+       ============================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px; /* отступ от навбара */
+    }
+
+    /* Тег "Available" над именем */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* Зелёная точка — "онлайн" */
+    .hero-badge .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s infinite; /* пульсирует */
+    }
+
+    /* Анимация пульса */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Большое имя */
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(56px, 10vw, 100px); /* адаптивный размер */
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+    }
+
+    /* Акцентный цвет в имени */
+    .hero h1 .accent { color: var(--accent); }
+
+    /* Подзаголовок */
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 500px;
+      margin-bottom: 40px;
+    }
+
+    /* Кнопки */
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Базовые стили кнопки */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Заполненная кнопка */
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #6a5ee0; transform: translateY(-2px); }
+
+    /* Кнопка с рамкой */
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ==============================
+       СЕКЦИИ (общие стили)
+       ============================== */
+    section {
+      padding: 100px 0;
+    }
+
+    /* Заголовок секции */
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      margin-bottom: 48px;
+    }
+
+    /* ==============================
+       ОБО МНЕ
+       ============================== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    /* Аватар-заглушка (замени на свою фотку) */
+    .avatar-box {
+      aspect-ratio: 1;
+      max-width: 340px;
+      border-radius: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px; /* эмодзи */
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Декоративный фон аватара */
+    .avatar-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, var(--accent)20, transparent 70%);
+    }
+
+    /* Карточки со статистикой */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .stat-card .number {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-card .label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ==============================
+       НАВЫКИ
+       ============================== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    /* Иконка навыка */
+    .skill-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .skill-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .skill-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Теги инструментов */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ==============================
+       ПРОЕКТЫ
+       ============================== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    /* Обложка проекта — цветной блок */
+    .project-thumb {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    /* Цвета обложек — можешь менять */
+    .project-thumb.purple { background: linear-gradient(135deg, #4c35b5, #7c6fff40); }
+    .project-thumb.red    { background: linear-gradient(135deg, #b53535, #ff6b6b40); }
+    .project-thumb.teal   { background: linear-gradient(135deg, #1a7c6a, #4ade8040); }
+
+    .project-body {
+      padding: 24px;
+    }
+
+    .project-body h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .project-body p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* ==============================
+       КОНТАКТЫ
+       ============================== */
+    .contact-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 60px;
+      text-align: center;
+    }
+
+    .contact-wrapper h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 40px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .contact-wrapper p {
+      color: var(--muted);
+      max-width: 400px;
+      margin: 0 auto 36px;
+    }
+
+    /* Ряд иконок-ссылок */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .social-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ==============================
+       ФУТЕР
+       ============================== */
+    footer {
+      padding: 32px 40px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ==============================
+       АДАПТИВ (мобилки)
+       ============================== */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; } /* скрываем ссылки на мобиле */
+      .about-grid { grid-template-columns: 1fr; }
+      .avatar-box { max-width: 100%; }
+      .contact-wrapper { padding: 40px 24px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Здесь HTML — содержимое -->
-  <h1>Привет, я Алекс</h1>
-  <p>Фотограф и программист</p>
+  <!-- ==============================
+       НАВИГАЦИЯ
+       ============================== -->
+  <nav>
+    <a href="#" class="nav-logo">DM</a>
+    <ul class="nav-links">
+      <!-- Якорные ссылки — "#about" ведёт к id="about" на странице -->
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==============================
+       HERO — первый экран
+       ============================== -->
+  <section class="hero">
+    <div class="container">
+
+      <!-- Бейдж статуса -->
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Open to new projects
+      </div>
+
+      <!-- Имя — поменяй на своё -->
+      <h1>Dmi<span class="accent">try</span><br>Rybka</h1>
+
+      <!-- Описание — 1-2 предложения о себе -->
+      <p class="hero-sub">
+        3D-моделирование · Программирование · 18 лет · Санкт-Петербург
+      </p>
+
+      <!-- Кнопки действия -->
+      <div class="btn-group">
+        <a href="#projects" class="btn btn-primary">Посмотреть работы</a>
+        <a href="#contact" class="btn btn-outline">Написать мне</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==============================
+       О СЕБЕ
+       ============================== -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+
+        <!-- Аватар — замени эмодзи на тег <img src="photo.jpg"> -->
+        <div class="avatar-box">
+          🐟
+        </div>
+
+        <!-- Текст -->
+        <div>
+          <p class="section-label">About me</p>
+          <h2 class="section-title">Привет, я Дмитрий</h2>
+
+          <!-- Редактируй этот текст как хочешь -->
+          <p style="color: var(--muted); margin-bottom: 24px;">
+            Занимаюсь 3D-моделированием и программированием из Санкт-Петербурга.
+            Люблю создавать вещи — будь то модели, код или идеи.
+          </p>
+          <p style="color: var(--muted);">
+            Сейчас развиваюсь в 3D и веб-разработке, изучаю новые инструменты
+            и берусь за интересные проекты.
+          </p>
+
+          <!-- Карточки статистики — меняй цифры -->
+          <div class="stats">
+            <div class="stat-card">
+              <div class="number">18</div>
+              <div class="label">Лет</div>
+            </div>
+            <div class="stat-card">
+              <div class="number">СПБ</div>
+              <div class="label">Город</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================
+       НАВЫКИ
+       ============================== -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-label">What I do</p>
+      <h2 class="section-title">Навыки</h2>
+
+      <div class="skills-grid">
+
+        <!-- Карточка навыка 1 -->
+        <div class="skill-card">
+          <div class="skill-icon">🧊</div>
+          <h3>3D-моделирование</h3>
+          <p>Создание моделей, рендер, анимация.</p>
+          <!-- Добавляй/убирай теги с инструментами -->
+          <div class="tags">
+            <span class="tag">Blender</span>
+            <span class="tag">Cinema 4D</span>
+          </div>
+        </div>
+
+        <!-- Карточка навыка 2 -->
+        <div class="skill-card">
+          <div class="skill-icon">💻</div>
+          <h3>Программирование</h3>
+          <p>Пишу код, делаю сайты и автоматизации.</p>
+          <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+          </div>
+        </div>
+
+        <!-- Карточка навыка 3 — добавь свой -->
+        <div class="skill-card">
+          <div class="skill-icon">📷</div>
+          <h3>Фотография</h3>
+          <p>Съёмка, обработка, ретушь.</p>
+          <div class="tags">
+            <span class="tag">Lightroom</span>
+            <span class="tag">Photoshop</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================
+       ПРОЕКТЫ
+       ============================== -->
+  <section id="projects">
+    <div class="container">
+      <p class="section-label">My work</p>
+      <h2 class="section-title">Проекты</h2>
+
+      <div class="projects-grid">
+
+        <!-- Проект 1 — поменяй контент -->
+        <div class="project-card">
+          <div class="project-thumb purple">🧊</div>
+          <div class="project-body">
+            <h3>3D Сцена</h3>
+            <p>Название проекта и краткое описание что это и зачем.</p>
+            <div class="tags">
+              <span class="tag">Blender</span>
+              <span class="tag">Render</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проект 2 -->
+        <div class="project-card">
+          <div class="project-thumb red">💻</div>
+          <div class="project-body">
+            <h3>Веб-проект</h3>
+            <p>Описание твоего проекта. Что сделал, какие технологии.</p>
+            <div class="tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Проект 3 -->
+        <div class="project-card">
+          <div class="project-thumb teal">📷</div>
+          <div class="project-body">
+            <h3>Фотопроект</h3>
+            <p>Серия снимков или фотосессия. Пару слов о концепции.</p>
+            <div class="tags">
+              <span class="tag">Photography</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================
+       КОНТАКТЫ
+       ============================== -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-wrapper">
+
+        <h2>Давай работать вместе</h2>
+        <p>Есть идея или проект? Пиши — отвечаю быстро.</p>
+
+        <div class="social-links">
+          <!-- Замени ссылки на свои -->
+          <a href="https://t.me/ТВОЙНИКхник" class="social-link">
+            ✈️ Telegram
+          </a>
+          <a href="https://github.com/DmitriyRybka" class="social-link">
+            🐙 GitHub
+          </a>
+          <!-- Добавляй другие ссылки по аналогии -->
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================
+       ФУТЕР
+       ============================== -->
+  <footer>
+    <p>© 2025 Dmitry Rybka — Сделано руками и кодом</p>
+  </footer>
 
 </body>
 </html>
